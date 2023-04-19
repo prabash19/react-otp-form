@@ -1,33 +1,64 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import React from "react";
 import "./App.css";
-
 function App() {
-  const [count, setCount] = useState(0);
+  const [otp, setOtp] = React.useState(new Array(6).fill(""));
+  //input value get
+  const handleChange = (el, index) => {
+    if (isNaN(el.value)) {
+      // if input is not a number, set value to empty string and add highlight class
+      // el.value = "";
+      setOtp([...otp.map((data, i) => (i === index ? el.value : data))]);
+      el.classList.add("highlight");
+    } else {
+      // if input is a number, update state with input value and remove highlight class
+      setOtp([...otp.map((data, i) => (i === index ? el.value : data))]);
+      el.classList.remove("highlight");
+    }
 
+    if (el.nextSibling) {
+      el.nextSibling.focus();
+    }
+  };
+  //onClick event
+  const submintOtp = () => {
+    otp.join("") === "111111" ? alert("verified") : alert("wrong otp");
+  };
+  const handlePaste = (e) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData("text/plain");
+    const otpArray = pastedData
+      .split("")
+      .filter((data) => !isNaN(data))
+      .slice(0, 6);
+    const newOtp = [...otp];
+    otpArray.forEach((data, index) => {
+      newOtp[index] = data;
+    });
+    setOtp(newOtp);
+  };
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="container">
+      <div className="otp-input-box">
+        {otp.map((data, i) => {
+          return (
+            <input
+              type="text"
+              name="otp"
+              className={`otp-input ${isNaN(data) ? "highlight" : ""}`}
+              maxLength={1}
+              key={i}
+              value={data}
+              onChange={(e) => handleChange(e.target, i)}
+              onFocus={(e) => e.target.select()}
+              onPaste={handlePaste}
+              onBlur={(e) => e.target.classList.remove("highlight")}
+            />
+          );
+        })}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <button onClick={submintOtp} className="button">
+        Verify
+      </button>
     </div>
   );
 }

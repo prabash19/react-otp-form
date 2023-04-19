@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import axios from "axios";
 import "./App.css";
+import { Router } from "react-router-dom";
 function App() {
   const [otp, setOtp] = React.useState(new Array(6).fill(""));
-  const [errorMesage, setErrorMessage] = useState(false);
+  const [error, setError] = useState(false);
   //input value get
   const handleChange = (el, index) => {
     if (isNaN(el.value)) {
@@ -22,9 +24,18 @@ function App() {
   };
   //onClick event
   const submintOtp = () => {
-    otp.join("") === "111111" ? alert("verified") : alert("wrong otp");
-    const otpValue = Number(otp.join(""));
-    console.log("otp value is", otpValue);
+    const data = { otp: Number(otp.join("")) };
+    console.log("Data is", data);
+    axios
+      .post("localhost:5000/verifyotp", data)
+      .then((response) => {
+        // Router.push("/success");
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log("erorr is", error);
+        setError(true);
+      });
   };
   const handlePaste = (e) => {
     e.preventDefault();

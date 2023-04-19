@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import "./App.css";
 function App() {
   const [otp, setOtp] = React.useState(new Array(6).fill(""));
+  const [errorMesage, setErrorMessage] = useState(false);
   //input value get
   const handleChange = (el, index) => {
     if (isNaN(el.value)) {
@@ -22,6 +23,8 @@ function App() {
   //onClick event
   const submintOtp = () => {
     otp.join("") === "111111" ? alert("verified") : alert("wrong otp");
+    const otpValue = Number(otp.join(""));
+    console.log("otp value is", otpValue);
   };
   const handlePaste = (e) => {
     e.preventDefault();
@@ -38,6 +41,15 @@ function App() {
   };
   return (
     <div className="container">
+      <h3>Please Enter Your OTP</h3>
+      {errorMesage && (
+        <p>
+          The OTP was not correct.
+          <br />
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Please enter again
+        </p>
+      )}
+
       <div className="otp-input-box">
         {otp.map((data, i) => {
           return (
@@ -57,7 +69,7 @@ function App() {
         })}
       </div>
       <button onClick={submintOtp} className="button">
-        Verify
+        <p>Submit</p>
       </button>
     </div>
   );
